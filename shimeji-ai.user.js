@@ -47,7 +47,11 @@
         MAX_SPEED: 9,
         CHARACTER_SIZE: 80,
         PLATFORM_MARGIN: 16,
-        QUESTION_PAUSE_MS: 5000
+        QUESTION_PAUSE_MS: 5000,
+        MAX_PROMPT_LENGTH: 2000,
+        API_TIMEOUT_MS: 30000,
+        MAX_FRAME_DELTA_MS: 50,
+        PLATFORM_SCAN_INTERVAL_MS: 500
     };
 
     /**
@@ -77,26 +81,37 @@
          */
         static async askAI(prompt) {
             const isPlaceholder = (value) => !value || value.includes('YOUR_') || value.includes('PASTE_');
+            const normalizedPrompt = typeof prompt === 'string' ? prompt.trim().slice(0, CONFIG.MAX_PROMPT_LENGTH) : '';
+
+            if (!normalizedPrompt) {
+                return 'Tulis pertanyaan terlebih dahulu.';
+            }
 
             if (CONFIG.AI_PROVIDER === 'gemini') {
                 if (isPlaceholder(CONFIG.GEMINI_API_KEY)) {
                     return '⚠️ Gemini API Key belum diatur. Ganti di konfigurasi script.';
                 }
-                return this.askGemini(prompt);
+                return this.askGemini(normalizedPrompt);
             }
 
             if (isPlaceholder(CONFIG.API_KEY)) {
                 return '⚠️ OpenAI API Key belum diatur. Ganti di konfigurasi script.';
             }
 
-            return this.askOpenAI(prompt);
+            return this.askOpenAI(normalizedPrompt);
         }
 
         static askOpenAI(prompt) {
             return new Promise((resolve, reject) => {
+                if (typeof GM_xmlhttpRequest !== 'function') {
+                    reject('Tampermonkey GM_xmlhttpRequest tidak tersedia.');
+                    return;
+                }
+
                 GM_xmlhttpRequest({
                     method: 'POST',
                     url: CONFIG.OPENAI_API_URL,
+                    timeout: CONFIG.API_TIMEOUT_MS,
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${CONFIG.API_KEY}`
@@ -110,6 +125,11 @@
                         temperature: 0.7
                     }),
                     onload(response) {
+                        if (response.status < 200 || response.status >= 300) {
+                            reject(`OpenAI mengembalikan HTTP ${response.status}.`);
+                            return;
+                        }
+
                         try {
                             const res = JSON.parse(response.responseText);
                             if (res.choices && res.choices.length > 0) {
@@ -124,6 +144,9 @@
                     },
                     onerror() {
                         reject('Koneksi ke OpenAI gagal. Periksa network / key / CORS.');
+                    },
+                    ontimeout() {
+                        reject('Permintaan OpenAI timeout.');
                     }
                 });
             });
@@ -131,6 +154,11 @@
 
         static askGemini(prompt) {
             return new Promise((resolve, reject) => {
+                if (typeof GM_xmlhttpRequest !== 'function') {
+                    reject('Tampermonkey GM_xmlhttpRequest tidak tersedia.');
+                    return;
+                }
+
                 const body = {
                     contents: [
                         {
@@ -144,9 +172,15 @@
                 GM_xmlhttpRequest({
                     method: 'POST',
                     url: `${CONFIG.GEMINI_API_URL}?key=${encodeURIComponent(CONFIG.GEMINI_API_KEY)}`,
+                    timeout: CONFIG.API_TIMEOUT_MS,
                     headers: { 'Content-Type': 'application/json' },
                     data: JSON.stringify(body),
                     onload(response) {
+                        if (response.status < 200 || response.status >= 300) {
+                            reject(`Gemini mengembalikan HTTP ${response.status}.`);
+                            return;
+                        }
+
                         try {
                             const res = JSON.parse(response.responseText);
                             const text = res.candidates?.[0]?.content?.parts?.map((p) => p.text || '').join('') || 'AI tidak memberikan jawaban.';
@@ -157,6 +191,9 @@
                     },
                     onerror() {
                         reject('Koneksi ke Gemini gagal. Periksa network / key / CORS.');
+                    },
+                    ontimeout() {
+                        reject('Permintaan Gemini timeout.');
                     }
                 });
             });
@@ -203,6 +240,7 @@
         setupEvents() {
             this.submitBtn.addEventListener('click', () => this.handleSend());
             this.closeBtn.addEventListener('click', () => this.close());
+            window.addEventListener('resize', () => this.handleViewportChange(), { passive: true });
             this.chatInput.addEventListener('keydown', (event) => {
                 if (event.key === 'Enter') {
                     this.handleSend();
@@ -234,12 +272,24 @@
         }
 
         /**
+         * Menjaga panel tetap berada di layar setelah perubahan viewport.
+         * [EDGE-CASE] Rotasi mobile atau resize desktop dapat membuat posisi awal valid menjadi
+         * tidak valid; anchor terakhir dipakai untuk menghitung ulang posisi secara deterministik.
+         */
+        handleViewportChange() {
+            if (this.isOpen() && this.lastAnchor) {
+                this.positionWithinViewport(this.lastAnchor.x, this.lastAnchor.y);
+            }
+        }
+
+        /**
          * Mengatur posisi chat agar seluruh panel tetap berada di dalam viewport.
          * Ukuran aktual digunakan supaya panel tidak terpotong ketika tinggi isi berubah.
          * @param {number} x - Posisi horizontal karakter.
          * @param {number} y - Posisi vertikal karakter.
          */
         positionWithinViewport(x, y) {
+            this.lastAnchor = { x, y };
             const panelWidth = this.container.offsetWidth || 300;
             const panelHeight = this.container.offsetHeight || 350;
             const viewportMargin = 12;
@@ -266,7 +316,7 @@
         }
 
         async handleSend() {
-            const text = this.chatInput.value.trim();
+            const text = this.chatInput.value.trim().slice(0, CONFIG.MAX_PROMPT_LENGTH);
             if (!text || this.isTyping) {
                 return;
             }
@@ -777,10 +827,12 @@
         }
 
         loop(currentTime) {
-            const dt = currentTime - this.lastTime;
+            // [EDGE-CASE] requestAnimationFrame dapat berhenti ketika tab tidak aktif; membatasi dt
+            // mencegah gravitasi dan animasi melompat jauh saat tab kembali terlihat.
+            const dt = Math.min(CONFIG.MAX_FRAME_DELTA_MS, Math.max(0, currentTime - this.lastTime));
             this.lastTime = currentTime;
 
-            if (currentTime - this.lastPlatformUpdate > 350) {
+            if (currentTime - this.lastPlatformUpdate > CONFIG.PLATFORM_SCAN_INTERVAL_MS) {
                 this.updatePlatforms();
                 this.lastPlatformUpdate = currentTime;
             }
@@ -937,6 +989,12 @@
      * Dipanggil saat DOM halaman sudah siap.
      */
     function init() {
+        // [AUDIT] Satu host per dokumen mencegah dua RAF loop, dua listener global, dan dua request
+        // API berjalan bersamaan ketika halaman SPA atau Tampermonkey memanggil bootstrap ulang.
+        if (document.getElementById('shimeji-ai-host')) {
+            return;
+        }
+
         const host = document.createElement('div');
         host.id = 'shimeji-ai-host';
         host.style.cssText = 'position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 2147483647;';
