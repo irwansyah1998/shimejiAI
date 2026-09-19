@@ -65,7 +65,8 @@
         DESCENDING_DURATION_MS: 260,
         PHYSICS_REFERENCE_FRAME_MS: 1000 / 60,
         TURN_COOLDOWN_MS: 450,
-        WALK_ACCELERATION: 0.12
+        WALK_ACCELERATION: 0.12,
+        SPRITE_SCALE: 1.08
     };
 
     /**
@@ -457,9 +458,11 @@
          */
         applyStyle() {
             this.spriteLayer.style.position = 'absolute';
-            this.spriteLayer.style.inset = '0';
-            this.spriteLayer.style.width = '100%';
-            this.spriteLayer.style.height = '100%';
+            // [OPTIMIZATION] Sedikit overscan memangkas ruang transparan dari SVG base64 tanpa
+            // mengubah data URI; overflow pada host menjaga hasil tetap berada di kotak karakter.
+            this.spriteLayer.style.inset = '-4%';
+            this.spriteLayer.style.width = '108%';
+            this.spriteLayer.style.height = '108%';
             this.spriteLayer.style.backgroundRepeat = 'no-repeat';
             this.spriteLayer.style.backgroundPosition = 'center';
             this.spriteLayer.style.backgroundSize = 'contain';
@@ -568,7 +571,7 @@
                 this.spriteLayer.style.backgroundPosition = 'center';
             }
 
-            this.spriteLayer.style.transform = `scaleX(${this.direction})`;
+            this.spriteLayer.style.transform = `scale(${CONFIG.SPRITE_SCALE}) scaleX(${this.direction})`;
         }
     }
 
