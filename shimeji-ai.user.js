@@ -34,8 +34,19 @@
         MODEL: 'gpt-4o-mini',
         SYSTEM_PROMPT: 'Kamu adalah asisten virtual bergaya anime, ceria, pintar, dan ringkas. Jawab singkat tapi jelas.',
 
-        // Ganti sprite di bawah dengan asset anime milik Anda sendiri.
-        // Contoh: gunakan PNG/GIF transparan dengan ukuran 80x80 atau lebih.
+        // [SPRITE-SIZE] Ukuran sumber yang direkomendasikan: 100x100 atau 128x128 px persegi.
+        // [SPRITE-SIZE] Ukuran minimum: 32x32 px; gambar lebih kecil akan terlihat pecah saat diperbesar.
+        // [SPRITE-SIZE] Batas maksimum praktis: 512x512 px per gambar/frame agar userscript tetap ringan.
+        // [SPRITE-SIZE] Pertahankan rasio 1:1 dan gunakan background transparan; rasio non-persegi
+        // dapat membuat pose terlihat gepeng karena setiap sprite dipasang pada kotak karakter persegi.
+        // [SPRITE-SIZE] Untuk raster PNG/WebP, usahakan data base64 di bawah 200 KB per frame.
+        // SVG base64 sebaiknya tetap ringkas dan memakai viewBox="0 0 100 100" atau setara.
+        // [SPRITE-SIZE] Sisakan margin transparan sekitar 4-8 px di tepi sumber. Layer renderer
+        // memakai overscan 4% untuk mengurangi padding visual tanpa memotong bagian tubuh penting.
+        // [SPRITE-RENDER] Hasil akhir dirender pada CHARACTER_SIZE (default 80x80 px); sumber
+        // 100x100/128x128 akan diperkecil dengan baik, sedangkan sumber di atas 512x512 tidak dianjurkan.
+        // [SPRITE-FORMAT] Setelah memilih gambar, ubah menjadi data URI, contoh:
+        // data:image/png;base64,... atau data:image/svg+xml;base64,...
         SPRITE_IDLE: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iIzRhOTBlMiIvPjxjaXJjbGUgY3g9IjM1IiBjeT0iNDAiIHI9IjUiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSI2NSIgY3k9IjQwIiByPSI1IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTQwIDYwIFExIDYwIDYwIDYwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNSIvPjwvc3ZnPg==',
         SPRITE_DRAG: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iI2U3NGMzYyIvPjxjaXJjbGUgY3g9IjM1IiBjeT0iNDAiIHI9IjgiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSI2NSIgY3k9IjQwIiByPSI4IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTQ1IDY1IFE1MCA3MCA1NSA2NSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9Im5vbmUiLz48L3N2Zz4=',
         SPRITE_CLIMB: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iIzYxZWY4NSIvPjxjaXJjbGUgY3g9IjM1IiBjeT0iNDAiIHI9IjUiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSI2NSIgY3k9IjQwIiByPSI1IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTM1IDY2IFI0NiA3OSAzNSA2NiIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9Im5vbmUiLz48L3N2Zz4=',
@@ -46,6 +57,7 @@
         GRAVITY: 0.8,
         FRICTION: 0.86,
         MAX_SPEED: 9,
+        // [SPRITE-RENDER] Ukuran kotak render karakter dalam px; rekomendasi 64-128, maksimum praktis 256.
         CHARACTER_SIZE: 80,
         PLATFORM_MARGIN: 16,
         QUESTION_PAUSE_MS: 5000,
@@ -66,6 +78,7 @@
         PHYSICS_REFERENCE_FRAME_MS: 1000 / 60,
         TURN_COOLDOWN_MS: 450,
         WALK_ACCELERATION: 0.12,
+        // [SPRITE-RENDER] Skala visual 0.90-1.15 dianjurkan; nilai terlalu besar dapat memotong pose.
         SPRITE_SCALE: 1.08
     };
 

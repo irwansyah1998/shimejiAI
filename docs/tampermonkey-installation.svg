@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">Tampermonkey installation flow</title>
+  <desc id="desc">Four steps: install Tampermonkey, create a userscript, configure an AI provider, and reload a webpage.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f5f8ff"/>
+      <stop offset="1" stop-color="#edf7f3"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#17324d" flood-opacity="0.14"/>
+    </filter>
+    <style>
+      .title { font: 700 30px Arial, sans-serif; fill: #17324d; }
+      .step { font: 700 18px Arial, sans-serif; fill: #17324d; }
+      .body { font: 400 15px Arial, sans-serif; fill: #426174; }
+      .number { font: 700 24px Arial, sans-serif; fill: #ffffff; }
+    </style>
+  </defs>
+  <rect width="1200" height="520" rx="24" fill="url(#background)"/>
+  <text x="600" y="58" text-anchor="middle" class="title">Install Shimeji AI Assistant</text>
+
+  <g filter="url(#shadow)">
+    <rect x="45" y="115" width="245" height="300" rx="18" fill="#ffffff"/>
+    <circle cx="92" cy="164" r="25" fill="#4a90e2"/><text x="92" y="173" text-anchor="middle" class="number">1</text>
+    <text x="70" y="225" class="step">Install</text>
+    <text x="70" y="256" class="body">Install the</text>
+    <text x="70" y="279" class="body">Tampermonkey</text>
+    <text x="70" y="302" class="body">browser extension.</text>
+    <path d="M105 350h125" stroke="#4a90e2" stroke-width="10" stroke-linecap="round"/>
+    <path d="M105 350l22-18M105 350l22 18" fill="none" stroke="#4a90e2" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="335" y="115" width="245" height="300" rx="18" fill="#ffffff"/>
+    <circle cx="382" cy="164" r="25" fill="#61c985"/><text x="382" y="173" text-anchor="middle" class="number">2</text>
+    <text x="360" y="225" class="step">Create script</text>
+    <text x="360" y="256" class="body">Open the dashboard,</text>
+    <text x="360" y="279" class="body">choose Create a</text>
+    <text x="360" y="302" class="body">new script, and paste</text>
+    <text x="360" y="325" class="body">shimeji-ai.user.js.</text>
+    <path d="M395 350h125" stroke="#61c985" stroke-width="10" stroke-linecap="round"/>
+    <path d="M395 350l22-18M395 350l22 18" fill="none" stroke="#61c985" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="625" y="115" width="245" height="300" rx="18" fill="#ffffff"/>
+    <circle cx="672" cy="164" r="25" fill="#f0a44b"/><text x="672" y="173" text-anchor="middle" class="number">3</text>
+    <text x="650" y="225" class="step">Configure</text>
+    <text x="650" y="256" class="body">Select OpenAI or</text>
+    <text x="650" y="279" class="body">Gemini and add the</text>
+    <text x="650" y="302" class="body">API key in CONFIG.</text>
+    <path d="M685 350h125" stroke="#f0a44b" stroke-width="10" stroke-linecap="round"/>
+    <path d="M685 350l22-18M685 350l22 18" fill="none" stroke="#f0a44b" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="915" y="115" width="245" height="300" rx="18" fill="#ffffff"/>
+    <circle cx="962" cy="164" r="25" fill="#907def"/><text x="962" y="173" text-anchor="middle" class="number">4</text>
+    <text x="940" y="225" class="step">Run</text>
+    <text x="940" y="256" class="body">Save, enable the</text>
+    <text x="940" y="279" class="body">userscript, and</text>
+    <text x="940" y="302" class="body">reload a webpage.</text>
+    <text x="940" y="325" class="body">Double-click the pet.</text>
+  </g>
+</svg>
