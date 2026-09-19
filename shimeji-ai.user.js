@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Shimeji AI Assistant
 // @namespace    http://tampermonkey.net/
-// @version      1.1.0
+// @version      1.2.4
 // @description  Interactive 2D Shimeji assistant with DOM physics, draggable movement, and AI chat integration.
 // @author       Irwansyah
 // @match        *://*/*
