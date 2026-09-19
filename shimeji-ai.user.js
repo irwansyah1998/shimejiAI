@@ -34,24 +34,52 @@
         MODEL: 'gpt-4o-mini',
         SYSTEM_PROMPT: 'Kamu adalah asisten virtual bergaya anime, ceria, pintar, dan ringkas. Jawab singkat tapi jelas.',
 
-        // Ganti sprite di bawah dengan asset anime milik Anda sendiri.
-        // Contoh: gunakan PNG/GIF transparan dengan ukuran 80x80 atau lebih.
+        // [SPRITE-SIZE] Ukuran sumber yang direkomendasikan: 100x100 atau 128x128 px persegi.
+        // [SPRITE-SIZE] Ukuran minimum: 32x32 px; gambar lebih kecil akan terlihat pecah saat diperbesar.
+        // [SPRITE-SIZE] Batas maksimum praktis: 512x512 px per gambar/frame agar userscript tetap ringan.
+        // [SPRITE-SIZE] Pertahankan rasio 1:1 dan gunakan background transparan; rasio non-persegi
+        // dapat membuat pose terlihat gepeng karena setiap sprite dipasang pada kotak karakter persegi.
+        // [SPRITE-SIZE] Untuk raster PNG/WebP, usahakan data base64 di bawah 200 KB per frame.
+        // SVG base64 sebaiknya tetap ringkas dan memakai viewBox="0 0 100 100" atau setara.
+        // [SPRITE-SIZE] Sisakan margin transparan sekitar 4-8 px di tepi sumber. Layer renderer
+        // memakai overscan 4% untuk mengurangi padding visual tanpa memotong bagian tubuh penting.
+        // [SPRITE-RENDER] Hasil akhir dirender pada CHARACTER_SIZE (default 80x80 px); sumber
+        // 100x100/128x128 akan diperkecil dengan baik, sedangkan sumber di atas 512x512 tidak dianjurkan.
+        // [SPRITE-FORMAT] Setelah memilih gambar, ubah menjadi data URI, contoh:
+        // data:image/png;base64,... atau data:image/svg+xml;base64,...
         SPRITE_IDLE: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iIzRhOTBlMiIvPjxjaXJjbGUgY3g9IjM1IiBjeT0iNDAiIHI9IjUiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSI2NSIgY3k9IjQwIiByPSI1IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTQwIDYwIFExIDYwIDYwIDYwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNSIvPjwvc3ZnPg==',
         SPRITE_DRAG: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iI2U3NGMzYyIvPjxjaXJjbGUgY3g9IjM1IiBjeT0iNDAiIHI9IjgiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSI2NSIgY3k9IjQwIiByPSI4IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTQ1IDY1IFE1MCA3MCA1NSA2NSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9Im5vbmUiLz48L3N2Zz4=',
         SPRITE_CLIMB: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iIzYxZWY4NSIvPjxjaXJjbGUgY3g9IjM1IiBjeT0iNDAiIHI9IjUiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSI2NSIgY3k9IjQwIiByPSI1IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTM1IDY2IFI0NiA3OSAzNSA2NiIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9Im5vbmUiLz48L3N2Zz4=',
         // Semua frame gerak menggunakan data URI base64 agar tetap offline dan stabil.
         SPRITE_JUMP: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iI2YwYTRkYiIvPjxjaXJjbGUgY3g9IjM1IiBjeT0iNDAiIHI9IjYiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSI2NSIgY3k9IjQwIiByPSI2IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTM1IDYwIEwxNSA0NSBNNjUgNjAgTDg1IDQ1IE00MCA2NSBRNTAgNzAgNjAgNjUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI0IiBmaWxsPSJub25lIi8+PC9zdmc+',
+        SPRITE_TALK: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIzOCIgdmlsbD0ibm9uZSIgZmlsbD0iIzkwN2RlZiIvPjxjaXJjbGUgY3g9IjM4IiBjeT0iNDAiIHI9IjYiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSI2MiIgY3k9IjQwIiByPSI2IiBmaWxsPSIjZmZmIi8+PGNpcmNsZSBjeD0iMzgiIGN5PSI0MCIgcj0iMiIgZmlsbD0iIzIyMiIvPjxjaXJjbGUgY3g9IjYyIiBjeT0iNDAiIHI9IjIiIGZpbGw9IiMyMjIiLz48cGF0aCBkPSJNMzggNjAgUTUwIDc4IDYyIDYwIiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+',
 
         GRAVITY: 0.8,
         FRICTION: 0.86,
         MAX_SPEED: 9,
+        // [SPRITE-RENDER] Ukuran kotak render karakter dalam px; rekomendasi 64-128, maksimum praktis 256.
         CHARACTER_SIZE: 80,
         PLATFORM_MARGIN: 16,
         QUESTION_PAUSE_MS: 5000,
         MAX_PROMPT_LENGTH: 2000,
         API_TIMEOUT_MS: 30000,
         MAX_FRAME_DELTA_MS: 50,
-        PLATFORM_SCAN_INTERVAL_MS: 500
+        PLATFORM_SCAN_INTERVAL_MS: 500,
+        ANSWER_ANIMATION_MS: 1800,
+        MAX_CHAT_MESSAGES: 100,
+        MAX_RESPONSE_LENGTH: 12000,
+        STUCK_TIMEOUT_MS: 1100,
+        STUCK_DISTANCE_PX: 3,
+        OBSTACLE_LOOKAHEAD_PX: 18,
+        RECOVERY_COOLDOWN_MS: 1200,
+        ENABLE_DESCENDING: true,
+        DESCENDING_CHANCE: 0.18,
+        DESCENDING_DURATION_MS: 260,
+        PHYSICS_REFERENCE_FRAME_MS: 1000 / 60,
+        TURN_COOLDOWN_MS: 450,
+        WALK_ACCELERATION: 0.12,
+        // [SPRITE-RENDER] Skala visual 0.90-1.15 dianjurkan; nilai terlalu besar dapat memotong pose.
+        SPRITE_SCALE: 1.08
     };
 
     /**
@@ -75,12 +103,34 @@
      */
     class APIConnector {
         /**
+         * Memvalidasi dan mengambil teks dari payload provider tanpa mempercayai bentuk respons eksternal.
+         * [SECURITY] Validasi eksplisit mencegah nilai object/array malformed masuk ke DOM sebagai teks.
+         * Kompleksitas: O(R), dengan R sebagai panjang respons yang diproses.
+         */
+        static extractText(value) {
+            if (typeof value === 'string') {
+                return value.trim().slice(0, CONFIG.MAX_RESPONSE_LENGTH);
+            }
+
+            if (Array.isArray(value)) {
+                return value
+                    .map((part) => (typeof part === 'string' ? part : part?.text || ''))
+                    .filter(Boolean)
+                    .join('')
+                    .trim()
+                    .slice(0, CONFIG.MAX_RESPONSE_LENGTH);
+            }
+
+            return '';
+        }
+
+        /**
          * Memilih provider AI aktif dan menjalankan request.
          * @param {string} prompt - Pertanyaan atau perintah user.
          * @returns {Promise<string>} Jawaban AI.
          */
         static async askAI(prompt) {
-            const isPlaceholder = (value) => !value || value.includes('YOUR_') || value.includes('PASTE_');
+            const isPlaceholder = (value) => typeof value !== 'string' || !value.trim() || value.includes('YOUR_') || value.includes('PASTE_');
             const normalizedPrompt = typeof prompt === 'string' ? prompt.trim().slice(0, CONFIG.MAX_PROMPT_LENGTH) : '';
 
             if (!normalizedPrompt) {
@@ -92,6 +142,10 @@
                     return '⚠️ Gemini API Key belum diatur. Ganti di konfigurasi script.';
                 }
                 return this.askGemini(normalizedPrompt);
+            }
+
+            if (CONFIG.AI_PROVIDER !== 'openai') {
+                return 'AI provider tidak valid. Gunakan "openai" atau "gemini".';
             }
 
             if (isPlaceholder(CONFIG.API_KEY)) {
@@ -125,19 +179,19 @@
                         temperature: 0.7
                     }),
                     onload(response) {
-                        if (response.status < 200 || response.status >= 300) {
-                            reject(`OpenAI mengembalikan HTTP ${response.status}.`);
+                        if (!response || response.status < 200 || response.status >= 300) {
+                            reject(`OpenAI mengembalikan HTTP ${response?.status || 0}.`);
                             return;
                         }
 
                         try {
-                            const res = JSON.parse(response.responseText);
-                            if (res.choices && res.choices.length > 0) {
-                                const text = res.choices[0].message?.content || 'AI tidak memberikan jawaban.';
-                                resolve(text);
-                            } else {
-                                resolve('Maaf, otak AI-ku sedang error...');
+                            if (typeof response.responseText !== 'string' || response.responseText.length > CONFIG.MAX_RESPONSE_LENGTH) {
+                                reject('Respons OpenAI terlalu besar atau tidak valid.');
+                                return;
                             }
+                            const res = JSON.parse(response.responseText);
+                            const text = APIConnector.extractText(res?.choices?.[0]?.message?.content);
+                            resolve(text || 'AI tidak memberikan jawaban.');
                         } catch (error) {
                             reject('Error parsing response dari OpenAI.');
                         }
@@ -176,15 +230,19 @@
                     headers: { 'Content-Type': 'application/json' },
                     data: JSON.stringify(body),
                     onload(response) {
-                        if (response.status < 200 || response.status >= 300) {
-                            reject(`Gemini mengembalikan HTTP ${response.status}.`);
+                        if (!response || response.status < 200 || response.status >= 300) {
+                            reject(`Gemini mengembalikan HTTP ${response?.status || 0}.`);
                             return;
                         }
 
                         try {
+                            if (typeof response.responseText !== 'string' || response.responseText.length > CONFIG.MAX_RESPONSE_LENGTH) {
+                                reject('Respons Gemini terlalu besar atau tidak valid.');
+                                return;
+                            }
                             const res = JSON.parse(response.responseText);
-                            const text = res.candidates?.[0]?.content?.parts?.map((p) => p.text || '').join('') || 'AI tidak memberikan jawaban.';
-                            resolve(text);
+                            const text = APIConnector.extractText(res?.candidates?.[0]?.content?.parts);
+                            resolve(text || 'AI tidak memberikan jawaban.');
                         } catch (error) {
                             reject('Error parsing response dari Gemini.');
                         }
@@ -324,6 +382,9 @@
             this.addMessage('user', text);
             this.chatInput.value = '';
             this.showTyping();
+            if (typeof this.onAnswerStart === 'function') {
+                this.onAnswerStart();
+            }
 
             try {
                 const reply = await APIConnector.askAI(text);
@@ -332,6 +393,10 @@
             } catch (error) {
                 this.hideTyping();
                 this.addMessage('ai', `Error: ${error}`);
+            } finally {
+                if (typeof this.onAnswerEnd === 'function') {
+                    this.onAnswerEnd();
+                }
             }
         }
 
@@ -340,6 +405,13 @@
             msg.className = `msg ${role}`;
             msg.textContent = text;
             this.chatBody.appendChild(msg);
+
+            // [OPTIMIZATION] Memangkas pesan tertua menjaga DOM O(M) tetap berbatas saat sesi panjang;
+            // trade-off-nya, riwayat visual paling lama tidak lagi tersedia di panel.
+            while (this.chatBody.children.length > CONFIG.MAX_CHAT_MESSAGES) {
+                this.chatBody.firstElementChild?.remove();
+            }
+
             this.chatBody.scrollTop = this.chatBody.scrollHeight;
         }
 
@@ -399,9 +471,11 @@
          */
         applyStyle() {
             this.spriteLayer.style.position = 'absolute';
-            this.spriteLayer.style.inset = '0';
-            this.spriteLayer.style.width = '100%';
-            this.spriteLayer.style.height = '100%';
+            // [OPTIMIZATION] Sedikit overscan memangkas ruang transparan dari SVG base64 tanpa
+            // mengubah data URI; overflow pada host menjaga hasil tetap berada di kotak karakter.
+            this.spriteLayer.style.inset = '-4%';
+            this.spriteLayer.style.width = '108%';
+            this.spriteLayer.style.height = '108%';
             this.spriteLayer.style.backgroundRepeat = 'no-repeat';
             this.spriteLayer.style.backgroundPosition = 'center';
             this.spriteLayer.style.backgroundSize = 'contain';
@@ -427,7 +501,11 @@
                 climb: 'climbing',
                 climbing: 'climbing',
                 jump: 'jumping',
-                jumping: 'jumping'
+                jumping: 'jumping',
+                answer: 'answering',
+                answering: 'answering',
+                descend: 'descending',
+                descending: 'descending'
             };
             return aliases[stateName] || stateName || 'idle';
         }
@@ -506,7 +584,7 @@
                 this.spriteLayer.style.backgroundPosition = 'center';
             }
 
-            this.spriteLayer.style.transform = `scaleX(${this.direction})`;
+            this.spriteLayer.style.transform = `scale(${CONFIG.SPRITE_SCALE}) scaleX(${this.direction})`;
         }
     }
 
@@ -529,6 +607,8 @@
 
             this.chatUI = chatUI;
             this.chatUI.onClose = () => this.endQuestionPause();
+            this.chatUI.onAnswerStart = () => this.beginAnswering();
+            this.chatUI.onAnswerEnd = () => this.finishAnswering();
             this.width = CONFIG.CHARACTER_SIZE;
             this.height = CONFIG.CHARACTER_SIZE;
             this.x = window.innerWidth / 2 - this.width / 2;
@@ -549,6 +629,12 @@
             this.walkDirection = Math.random() < 0.5 ? -1 : 1;
             this.lastPlatformUpdate = 0;
             this.questionPauseTimer = 0;
+            this.answerTimer = 0;
+            this.isAnswering = false;
+            this.stuckTimer = 0;
+            this.recoveryCooldown = 0;
+            this.lastSampleX = this.x;
+            this.lastSampleY = this.y;
 
             this.animator = new CharacterAnimator(this.element, {
                 idle: {
@@ -570,6 +656,10 @@
                 jumping: {
                     url: CONFIG.SPRITE_JUMP,
                     ticksPerFrame: 8
+                },
+                answering: {
+                    url: CONFIG.SPRITE_TALK,
+                    ticksPerFrame: 7
                 },
                 falling: {
                     url: CONFIG.SPRITE_IDLE,
@@ -625,6 +715,14 @@
                 jump: {
                     url: CONFIG.SPRITE_JUMP,
                     ticksPerFrame: 8
+                },
+                answer: {
+                    url: CONFIG.SPRITE_TALK,
+                    ticksPerFrame: 7
+                },
+                descending: {
+                    url: CONFIG.SPRITE_CLIMB,
+                    ticksPerFrame: 7
                 }
             });
 
@@ -650,7 +748,7 @@
                 }
 
                 this.x = event.clientX - this.dragOffsetX;
-                this.y = event.clientY - this.dragOffsetY;
+                this.y = Math.max(0, event.clientY - this.dragOffsetY);
                 this.vx = event.movementX * 0.7;
                 this.vy = event.movementY * 0.7;
             });
@@ -690,6 +788,28 @@
         endQuestionPause() {
             this.questionPauseTimer = 0;
             this.randomActionTimer = 500 + Math.random() * 900;
+        }
+
+        /**
+         * Memulai mode berbicara ketika request AI sedang diproses.
+         * [AUDIT] Mode ini menghentikan velocity, tetapi RAF tetap berjalan agar UI tidak membeku.
+         */
+        beginAnswering() {
+            this.isAnswering = true;
+            this.answerTimer = 0;
+            this.vx = 0;
+            this.vy = 0;
+            this.setState('answering');
+        }
+
+        /**
+         * Menjadwalkan akhir animasi bicara setelah jawaban diterima atau request gagal.
+         * [EDGE-CASE] Durasi pendek tetap diberikan setelah response agar jawaban tidak terasa terputus.
+         */
+        finishAnswering() {
+            if (this.isAnswering) {
+                this.answerTimer = CONFIG.ANSWER_ANIMATION_MS;
+            }
         }
 
         /**
@@ -795,6 +915,44 @@
         }
 
         /**
+         * Memastikan karakter memiliki permukaan yang lebih rendah sebelum turun.
+         * [EDGE-CASE] Tanpa pemeriksaan ini, aksi turun di lantai atau platform terakhir hanya
+         * membuat karakter menembus halaman tanpa tujuan. Kompleksitas: O(P).
+         * @returns {boolean} True jika platform aktif bukan lantai viewport dan ada ruang turun.
+         */
+        canDescend() {
+            if (!CONFIG.ENABLE_DESCENDING) {
+                return false;
+            }
+
+            const current = this.getGroundPlatform();
+            if (!current || current.top >= window.innerHeight - this.height - 2) {
+                return false;
+            }
+
+            const hasLowerSurface = this.platforms.some((platform) => {
+                const overlapsX = this.x + this.width > platform.left && this.x < platform.right;
+                const lowerTop = platform.top > current.top + this.height * 0.35;
+                const reachable = platform.top - current.top < this.height * 5;
+                return overlapsX && lowerTop && reachable;
+            });
+
+            return hasLowerSurface;
+        }
+
+        /**
+         * Memulai drop-through terkontrol dari platform saat karakter memilih turun.
+         * Timer pendek memberi kesempatan melewati platform aktif, setelah itu collision normal
+         * kembali mencari pijakan berikutnya. Kompleksitas: O(1).
+         */
+        beginDescending() {
+            this.descendingTimer = CONFIG.DESCENDING_DURATION_MS;
+            this.vx = 0;
+            this.vy = 1.5;
+            this.setState('descending');
+        }
+
+        /**
          * Mencari platform yang berada di sisi karakter untuk keperluan climbing.
          * @returns {Object|null} Platform sisi atau null.
          */
@@ -806,6 +964,118 @@
             });
 
             return nearVertical || null;
+        }
+
+        /**
+         * Mendeteksi blok yang berada tepat di depan karakter pada ketinggian tubuhnya.
+         * [OPTIMIZATION] Pencarian hanya memakai platform yang sudah dicache, sehingga tidak memicu
+         * layout read tambahan; kompleksitasnya O(P) dan hanya dipakai ketika karakter berpijak.
+         * @returns {Object|null} Penghalang terdekat atau null.
+         */
+        getObstacleAhead() {
+            const direction = this.vx === 0 ? this.walkDirection : Math.sign(this.vx);
+            const front = direction > 0 ? this.x + this.width : this.x;
+            const feet = this.y + this.height;
+
+            return this.platforms.reduce((nearest, platform) => {
+                    const verticalOverlap = this.y + 10 < platform.bottom && feet - 8 > platform.top;
+                    const horizontalDistance = direction > 0 ? platform.left - front : front - platform.right;
+                    const ahead = horizontalDistance >= -4 && horizontalDistance <= CONFIG.OBSTACLE_LOOKAHEAD_PX;
+                    const meaningfulWall = platform.height > this.height * 0.35;
+                    if (!verticalOverlap || !ahead || !meaningfulWall) {
+                        return nearest;
+                    }
+
+                    return !nearest || platform.top < nearest.top ? platform : nearest;
+                }, null);
+        }
+
+        /**
+         * Memulihkan karakter dari kondisi macet memakai sensor posisi dan penghalang lokal.
+         * [EDGE-CASE] Cooldown mencegah karakter memantul atau melompat setiap frame di satu titik.
+         * Kompleksitas: O(P) untuk obstacle check dan O(1) untuk keputusan recovery.
+         * @param {number} dt - Delta waktu frame dalam milidetik.
+         */
+        updateStuckRecovery(dt) {
+            if (this.isDragging || this.isAnswering || this.questionPauseTimer > 0) {
+                this.stuckTimer = 0;
+                this.recoveryCooldown = Math.max(0, this.recoveryCooldown - dt);
+                this.lastSampleX = this.x;
+                this.lastSampleY = this.y;
+                return;
+            }
+
+            this.recoveryCooldown = Math.max(0, this.recoveryCooldown - dt);
+            const movedDistance = Math.hypot(this.x - this.lastSampleX, this.y - this.lastSampleY);
+            const attemptingMovement = Math.abs(this.vx) > 0.35 || this.state === 'climbing' || this.state === 'jumping' || this.state === 'descending';
+            const obstacleAhead = this.state === 'walking' ? this.getObstacleAhead() : null;
+
+            if (obstacleAhead && this.recoveryCooldown <= 0) {
+                this.recoverFromObstacle(obstacleAhead);
+            } else if (attemptingMovement && movedDistance < CONFIG.STUCK_DISTANCE_PX) {
+                this.stuckTimer += dt;
+                if (this.stuckTimer >= CONFIG.STUCK_TIMEOUT_MS && this.recoveryCooldown <= 0) {
+                    this.recoverFromStuck();
+                }
+            } else {
+                this.stuckTimer = 0;
+            }
+
+            this.lastSampleX = this.x;
+            this.lastSampleY = this.y;
+            this.descendingTimer = 0;
+            this.turnCooldown = 0;
+        }
+
+        /**
+         * Memilih lompatan sebagai respons terhadap penghalang yang dapat dilewati.
+         * [AUDIT] Penghalang tinggi tidak dipaksa ditembus; karakter berbalik agar tidak terjebak di wall.
+         * @param {Object} obstacle - Platform penghalang di depan karakter.
+         */
+        recoverFromObstacle(obstacle) {
+            const obstacleHeight = obstacle.bottom - this.y;
+            this.recoveryCooldown = CONFIG.RECOVERY_COOLDOWN_MS;
+            this.stuckTimer = 0;
+
+            if (obstacleHeight < this.height * 1.25 && this.getGroundPlatform()) {
+                this.vy = -9.5;
+                this.vx = this.walkDirection * 2.2;
+                this.setState('jumping');
+                return;
+            }
+
+            this.walkDirection *= -1;
+            this.autoDirection = this.walkDirection;
+            this.vx = this.walkDirection * 2.5;
+            this.setState('walking');
+        }
+
+        /**
+         * Memulihkan karakter ketika sensor posisi menunjukkan tidak ada kemajuan.
+         * Alternatif dipilih berdasarkan state agar recovery tidak selalu berupa lompatan.
+         */
+        recoverFromStuck() {
+            this.recoveryCooldown = CONFIG.RECOVERY_COOLDOWN_MS;
+            this.stuckTimer = 0;
+
+            if (this.state === 'climbing') {
+                this.climbTimer = 0;
+                this.walkDirection *= -1;
+                this.vx = this.walkDirection * 2;
+                this.setState('falling');
+                return;
+            }
+
+            if (this.getGroundPlatform()) {
+                this.vy = -9;
+                this.vx = this.walkDirection * 2;
+                this.setState('jumping');
+                return;
+            }
+
+            this.walkDirection *= -1;
+            this.vx = this.walkDirection * 2;
+            this.setState('falling');
         }
 
         /**
@@ -839,6 +1109,7 @@
 
             if (!this.isDragging) {
                 this.applyPhysics(dt);
+                this.updateStuckRecovery(dt);
             }
 
             this.render(dt);
@@ -850,6 +1121,43 @@
          * Menggabungkan gravitasi, collision dengan elemen DOM, aksi random, dan climbing.
          */
         applyPhysics(dt) {
+            // [OPTIMIZATION] Normalize movement to a 60 Hz reference step; otherwise the old
+            // per-frame constants made the pet faster and more heavily damped on high-refresh screens.
+            const physicsStep = Math.min(2, Math.max(0.5, dt / CONFIG.PHYSICS_REFERENCE_FRAME_MS));
+            this.turnCooldown = Math.max(0, this.turnCooldown - dt);
+
+            if (this.isAnswering) {
+                this.vx = 0;
+                this.vy = 0;
+                this.setState('answering');
+
+                if (this.answerTimer > 0) {
+                    this.answerTimer -= dt;
+                    if (this.answerTimer <= 0) {
+                        this.isAnswering = false;
+                        this.randomActionTimer = 500 + Math.random() * 900;
+                        this.setState('idle');
+                    }
+                }
+
+                return;
+            }
+
+            if (this.descendingTimer > 0) {
+                this.descendingTimer -= dt;
+                this.vx = 0;
+                this.vy = 1.5;
+                this.y += 1.5 * physicsStep;
+                this.setState('descending');
+
+                if (this.descendingTimer <= 0 || this.y >= window.innerHeight - this.height) {
+                    this.descendingTimer = 0;
+                    this.setState('falling');
+                }
+
+                return;
+            }
+
             if (this.questionPauseTimer > 0) {
                 this.questionPauseTimer -= dt;
                 this.vx = 0;
@@ -867,11 +1175,20 @@
             }
 
             this.previousY = this.y;
-            this.vy += CONFIG.GRAVITY;
-            this.x += this.vx;
-            this.y += this.vy;
-            this.vx *= CONFIG.FRICTION;
+            this.vy += CONFIG.GRAVITY * physicsStep;
+            this.x += this.vx * physicsStep;
+            this.y += this.vy * physicsStep;
+            this.vx *= Math.pow(CONFIG.FRICTION, physicsStep);
             this.vx = Math.max(-CONFIG.MAX_SPEED, Math.min(CONFIG.MAX_SPEED, this.vx));
+
+            // [EDGE-CASE] Jumping/climbing can move upward indefinitely on short or unusual layouts.
+            // Clamping before collision resolution keeps the character visible without teleporting it.
+            if (this.y < 0) {
+                this.y = 0;
+                if (this.vy < 0) {
+                    this.vy = 0;
+                }
+            }
 
             const floorY = window.innerHeight - this.height;
             const groundPlatform = this.getGroundPlatform();
@@ -897,8 +1214,13 @@
                 const nearRight = this.x <= climbPlatform.right + CONFIG.PLATFORM_MARGIN && this.x >= climbPlatform.right - CONFIG.PLATFORM_MARGIN;
                 if (nearLeft || nearRight) {
                     this.vy = 0;
-                    this.x += nearLeft ? -0.8 : 0.8;
-                    this.y -= 0.8;
+                    this.x += (nearLeft ? -0.8 : 0.8) * physicsStep;
+                    this.y = Math.max(0, this.y - 0.8 * physicsStep);
+                    if (this.y === 0) {
+                        this.climbTimer = 0;
+                        this.setState('idle');
+                        return;
+                    }
                     this.setState('climbing');
                     return;
                 }
@@ -916,7 +1238,7 @@
                 this.climbTimer -= dt;
                 this.vy = 0;
                 this.vx = this.autoDirection * 1.2;
-                this.y -= 1.1;
+                this.y = Math.max(0, this.y - 1.1 * physicsStep);
                 this.setState('climbing');
                 if (this.climbTimer <= 0) {
                     this.randomActionTimer = 800 + Math.random() * 1400;
@@ -928,13 +1250,15 @@
             if (grounded) {
                 this.randomActionTimer -= dt;
 
-                if (this.isNearPlatformEdge(this.x + this.vx)) {
+                if (this.isNearPlatformEdge(this.x + this.vx * physicsStep) && this.turnCooldown <= 0) {
                     this.walkDirection *= -1;
+                    this.autoDirection = this.walkDirection;
+                    this.turnCooldown = CONFIG.TURN_COOLDOWN_MS;
                 }
 
-                if (Math.abs(this.vx) < 0.4) {
-                    this.vx = this.walkDirection * (1.2 + Math.random() * 1.7);
-                }
+                const targetWalkSpeed = this.walkDirection * 2.1;
+                const steering = Math.min(1, CONFIG.WALK_ACCELERATION * physicsStep);
+                this.vx += (targetWalkSpeed - this.vx) * steering;
 
                 if (this.randomActionTimer <= 0) {
                     const actionRoll = Math.random();
@@ -951,6 +1275,9 @@
                         this.randomActionTimer = 1400 + Math.random() * 2000;
                         grounded = false;
                         this.setState('jumping');
+                    } else if (actionRoll < 0.72 + CONFIG.DESCENDING_CHANCE && this.canDescend()) {
+                        this.beginDescending();
+                        this.randomActionTimer = 1000 + Math.random() * 1600;
                     } else {
                         this.climbTimer = 220 + Math.random() * 500;
                         this.randomActionTimer = 1100 + Math.random() * 1800;
@@ -1058,6 +1385,14 @@
                 background-image: url('${CONFIG.SPRITE_CLIMB}');
             }
 
+            .state-answering {
+                animation: answer-pulse 0.36s infinite alternate ease-in-out;
+            }
+
+            .state-descending {
+                animation: descend-pulse 0.42s infinite alternate ease-in-out;
+            }
+
             @keyframes bob {
                 0% {
                     opacity: 1;
@@ -1065,6 +1400,22 @@
                 100% {
                     opacity: 0.94;
                 }
+            }
+
+            @keyframes answer-pulse {
+                from {
+                    opacity: 0.82;
+                    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.22));
+                }
+                to {
+                    opacity: 1;
+                    filter: drop-shadow(0 6px 12px rgba(74, 144, 226, 0.5));
+                }
+            }
+
+            @keyframes descend-pulse {
+                from { opacity: 0.86; }
+                to { opacity: 1; }
             }
 
             .chat-header {

@@ -4,6 +4,12 @@ Shimeji AI Assistant is a Tampermonkey userscript that adds an interactive float
 
 The project uses plain JavaScript and browser APIs. It has no npm dependency and no build step.
 
+## Installation At A Glance
+
+![Tampermonkey installation flow](docs/tampermonkey-installation.svg)
+
+The diagram summarizes the setup. Follow the detailed steps below when installing the script for the first time.
+
 ## Features
 
 - Floating Shimeji-style character rendered inside an isolated Shadow DOM.
@@ -18,6 +24,7 @@ The project uses plain JavaScript and browser APIs. It has no npm dependency and
 - Chatbox close button, `Escape` key support, and automatic timeout closing.
 - OpenAI and Google Gemini support through `GM_xmlhttpRequest`.
 - Graceful handling for missing API keys, HTTP errors, network failures, and request timeouts.
+- Obstacle detection, stuck recovery, controlled descending, and refresh-rate-independent movement.
 
 ## Project Files
 
@@ -93,6 +100,15 @@ MAX_PROMPT_LENGTH: 2000,
 API_TIMEOUT_MS: 30000,
 MAX_FRAME_DELTA_MS: 50,
 PLATFORM_SCAN_INTERVAL_MS: 500,
+ANSWER_ANIMATION_MS: 1800,
+MAX_CHAT_MESSAGES: 100,
+MAX_RESPONSE_LENGTH: 12000,
+ENABLE_DESCENDING: true,
+DESCENDING_CHANCE: 0.18,
+DESCENDING_DURATION_MS: 260,
+STUCK_TIMEOUT_MS: 1100,
+RECOVERY_COOLDOWN_MS: 1200,
+SPRITE_SCALE: 1.08,
 ```
 
 - `GRAVITY` controls downward acceleration.
@@ -105,6 +121,15 @@ PLATFORM_SCAN_INTERVAL_MS: 500,
 - `API_TIMEOUT_MS` prevents a request from hanging indefinitely.
 - `MAX_FRAME_DELTA_MS` prevents large physics jumps after a background tab becomes active again.
 - `PLATFORM_SCAN_INTERVAL_MS` controls how often webpage platforms are rescanned.
+- `ANSWER_ANIMATION_MS` controls the speaking animation after an AI response.
+- `MAX_CHAT_MESSAGES` bounds the number of visible chat messages kept in the DOM.
+- `MAX_RESPONSE_LENGTH` rejects excessively large API responses.
+- `ENABLE_DESCENDING` enables controlled drop-through movement.
+- `DESCENDING_CHANCE` controls how often the character chooses to descend.
+- `DESCENDING_DURATION_MS` controls the drop-through duration.
+- `STUCK_TIMEOUT_MS` controls how long the character may remain without progress before recovery.
+- `RECOVERY_COOLDOWN_MS` prevents repeated jump or turn recovery at the same position.
+- `SPRITE_SCALE` adjusts the visual size of the embedded sprite inside the character box.
 
 ## Sprite Customization
 
@@ -125,6 +150,19 @@ To use your own artwork:
 4. Keep the artwork square when possible so it aligns with the `CHARACTER_SIZE` box.
 
 Walking uses a frame list in `CharacterPhysics`. Replace the entries in the `walking.urls` array with your own local data URIs to create a custom walk cycle.
+
+### Sprite Size Guidelines
+
+- Recommended source size: `100x100` or `128x128` pixels.
+- Minimum source size: `32x32` pixels.
+- Practical maximum: `512x512` pixels per frame.
+- Use a square `1:1` canvas with transparency.
+- Keep raster data below approximately `200 KB` per frame.
+- For SVG, use a consistent `viewBox`, such as `0 0 100 100`.
+- Leave approximately `4-8 px` of transparent margin around the artwork.
+- The default render box is `80x80` pixels through `CHARACTER_SIZE`.
+
+The renderer applies a small visual overscan to reduce excessive transparent padding. Do not place important artwork at the extreme edge of the source image, or the pose may be clipped.
 
 ## How to Use
 
